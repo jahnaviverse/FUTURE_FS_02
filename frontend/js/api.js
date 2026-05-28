@@ -1,4 +1,4 @@
-const API_BASE = "http://localhost:5006/api";
+const API_BASE = "https://future-fs-02-9zng.onrender.com/api";
 
 async function request(endpoint, options = {}) {
   const res = await fetch(`${API_BASE}${endpoint}`, {
