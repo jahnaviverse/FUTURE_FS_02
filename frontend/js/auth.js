@@ -1,36 +1,61 @@
+// auth.js
 document.addEventListener("DOMContentLoaded", () => {
-  const { TOKEN_KEY } = window.CRM_CONFIG;
-
-  if (localStorage.getItem(TOKEN_KEY)) {
-    window.location.href = "pages/dashboard.html";
-    return;
-  }
-
-  const form = document.getElementById("loginForm");
-  const err = document.getElementById("loginError");
-
-  form.addEventListener("submit", async (e) => {
-    e.preventDefault();
-
-    err.textContent = "";
-
-    const email = document.getElementById("email").value.trim();
-    const password = document.getElementById("password").value;
-
-    if (!email || !password) {
-      err.textContent = "Email and password are required.";
-      return;
+    console.log("Auth.js loaded");
+    console.log("API available?", typeof API !== 'undefined');
+    
+    const loginForm = document.getElementById("loginForm");
+    
+    // Check if already logged in
+    const token = localStorage.getItem("crm_token");
+    if (token && window.location.pathname.includes("index.html")) {
+        window.location.href = "pages/dashboard.html";
     }
-
-    // Demo credentials
-    if (email !== "admin@crm.in" || password !== "Admin1234") {
-      err.textContent = "Invalid demo credentials.";
-      return;
+    
+    if (loginForm) {
+        loginForm.addEventListener("submit", handleLogin);
+    } else {
+        console.error("Login form not found!");
     }
-
-    // Demo login success
-    localStorage.setItem(TOKEN_KEY, "demo-token");
-
-    window.location.href = "pages/dashboard.html";
-  });
 });
+
+async function handleLogin(e) {
+    e.preventDefault();
+    
+    const email = document.getElementById("email").value;
+    const password = document.getElementById("password").value;
+    const remember = document.getElementById("remember")?.checked || false;
+    const errorDiv = document.getElementById("loginError");
+    
+    // Check if API is available
+    if (typeof API === 'undefined') {
+        errorDiv.textContent = "System error: API not loaded. Please refresh the page.";
+        console.error("API is not defined - Check if api.js loaded correctly");
+        return;
+    }
+    
+    try {
+        errorDiv.textContent = "";
+        console.log("Attempting login for:", email);
+        
+        const response = await API.login(email, password);
+        console.log("Login response:", response);
+        
+        if (response.token) {
+            // Store token and user data
+            localStorage.setItem("crm_token", response.token);
+            localStorage.setItem("crm_user", JSON.stringify(response.user));
+            
+            if (remember) {
+                localStorage.setItem("crm_remember", "true");
+            }
+            
+            // Redirect to dashboard
+            window.location.href = "pages/dashboard.html";
+        } else {
+            throw new Error("Invalid response from server");
+        }
+    } catch (error) {
+        console.error("Login error:", error);
+        errorDiv.textContent = error.message || "Login failed. Please check your credentials.";
+    }
+}

@@ -17,22 +17,44 @@ const sampleLeads = [
 ];
 
 (async () => {
-  await connectDB();
-  const email = (process.env.ADMIN_EMAIL || "admin@crm.io").toLowerCase();
-  let admin = await User.findOne({ email });
-  if (!admin) {
-    admin = await User.create({
-      name: process.env.ADMIN_NAME || "Admin",
-      email,
-      password: process.env.ADMIN_PASSWORD || "admin123",
-      role: "admin",
-    });
-    console.log(`👤 Created admin: ${email}`);
-  } else {
-    console.log(`👤 Admin already exists: ${email}`);
+  try {
+    await connectDB();
+    
+    // Use your actual admin credentials from .env
+    const email = (process.env.ADMIN_EMAIL || "admin@crm.in").toLowerCase();
+    let admin = await User.findOne({ email });
+    
+    if (!admin) {
+      admin = await User.create({
+        name: process.env.ADMIN_NAME || "Admin",
+        email: email,
+        password: process.env.ADMIN_PASSWORD || "Admin1234", // Changed to match your login
+        role: "admin",
+      });
+      console.log(`👤 Created admin: ${email}`);
+    } else {
+      console.log(`👤 Admin already exists: ${email}`);
+    }
+    
+    // Clear existing leads
+    await Lead.deleteMany({});
+    console.log(`🗑️  Cleared existing leads`);
+    
+    // Insert new leads with correct owner field
+    const leads = await Lead.insertMany(sampleLeads.map(l => ({ 
+      ...l, 
+      createdBy: admin._id,  // Changed from 'owner' to 'createdBy'
+      owner: admin._id       // Keep both to be safe
+    })));
+    
+    console.log(`✅ Inserted ${leads.length} sample leads`);
+    console.log(`\n📝 Login with:`);
+    console.log(`   Email: ${email}`);
+    console.log(`   Password: ${process.env.ADMIN_PASSWORD || "Admin1234"}`);
+    
+    process.exit(0);
+  } catch (e) { 
+    console.error("❌ Error:", e); 
+    process.exit(1);
   }
-  await Lead.deleteMany({});
-  const leads = await Lead.insertMany(sampleLeads.map(l => ({ ...l, owner: admin._id })));
-  console.log(`✅ Inserted ${leads.length} sample leads`);
-  process.exit(0);
-})().catch((e) => { console.error(e); process.exit(1); });
+})();
