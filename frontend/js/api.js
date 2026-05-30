@@ -1,7 +1,7 @@
 // api.js - Complete Working Version
 const API_BASE = (window.CRM_CONFIG && window.CRM_CONFIG.API_BASE) 
     ? `${window.CRM_CONFIG.API_BASE}/api` 
-    : "https://future-fs-02-su2g.onrender.com";
+    : "https://future-fs-02-su2g.onrender.com/api";
 
 console.log("API_BASE URL:", API_BASE);
 
@@ -18,7 +18,7 @@ async function request(endpoint, options = {}) {
     }
     
     try {
-        const response = await fetch(`${API_BASE}${api}${endpoint}`, {
+        const response = await fetch(`${API_BASE}${API_BASE}${endpoint}`, {
             headers,
             ...options
         });
