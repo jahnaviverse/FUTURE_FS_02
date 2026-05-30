@@ -18,7 +18,7 @@ async function request(endpoint, options = {}) {
     }
     
     try {
-        const response = await fetch(`${API_BASE}${endpoint}`, {
+        const response = await fetch(`${API_BASE}$(api)${endpoint}`, {
             headers,
             ...options
         });
