@@ -1,7 +1,7 @@
 // api.js - Complete Working Version
 const API_BASE = (window.CRM_CONFIG && window.CRM_CONFIG.API_BASE) 
     ? `${window.CRM_CONFIG.API_BASE}/api` 
-    : "https://future-fs-02-56uq.onrender.com";
+    : "https://future-fs-02-su2g.onrender.com";
 
 console.log("API_BASE URL:", API_BASE);
 
