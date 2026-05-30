@@ -53,14 +53,14 @@ async function request(endpoint, options = {}) {
 
 const API = {
     login(email, password) {
-        return request("/api/auth/login", {
+        return request("/auth/login", {
             method: "POST",
             body: JSON.stringify({ email, password })
         });
     },
     
     getMe() {
-        return request("/api/auth/me");
+        return request("/auth/me");
     },
     
     listLeads(params = {}) {
@@ -71,35 +71,35 @@ const API = {
             }
         });
         const qs = queryParams.toString();
-        return request(`/api/leads${qs ? `?${qs}` : ""}`);
+        return request(`/leads${qs ? `?${qs}` : ""}`);
     },
 
     getLead(id) {
-        return request(`/api/leads/${id}`);
+        return request(`/leads/${id}`);
     },
 
     createLead(body) {
-        return request("/api/leads", {
+        return request("/leads", {
             method: "POST",
             body: JSON.stringify(body)
         });
     },
 
     updateLead(id, body) {
-        return request(`/api/leads/${id}`, {
+        return request(`/leads/${id}`, {
             method: "PUT",
             body: JSON.stringify(body)
         });
     },
 
     deleteLead(id) {
-        return request(`/api/leads/${id}`, {
+        return request(`/leads/${id}`, {
             method: "DELETE"
         });
     },
     
     stats() {
-        return request("/api/leads/stats/summary");
+        return request("/leads/stats/summary");
     }
 };
 
