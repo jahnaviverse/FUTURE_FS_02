@@ -1,6 +1,6 @@
 // Update API_BASE to point to your backend.
 window.CRM_CONFIG = {
-  API_BASE: "http://localhost:5006",
+  API_BASE: "https://future-fs-02-su2g.onrender.com",
   TOKEN_KEY: "crm_token",
   THEME_KEY: "crm_theme",
 };
